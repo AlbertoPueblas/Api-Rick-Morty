@@ -1,0 +1,14 @@
+.Desing {
+    display: flex;
+    font-size: xx-large;
+}
+
+.card {
+    background-color: rgb(87, 87, 88);
+    margin-top: 1em;
+    border-radius: 1em;
+
+    Img {
+        border-radius: 5em;
+    }
+}
