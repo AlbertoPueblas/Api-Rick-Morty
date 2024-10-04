@@ -3,55 +3,83 @@ import { bringAllCharacters } from '../../services/apiCalls';
 import './Characters.css'
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import { Table } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 //---------------------------------
 
 export const Characters = () => {
 
     const [characters, setCharacters] = useState([]);
+    const [flippedCards, setFlipedCards] = useState({});
+
+    const navigate = useNavigate();
 
     const bringCharacters = () => {
         bringAllCharacters()
             .then((apiResponse) => {
                 setCharacters(apiResponse.data.results);
                 console.log(apiResponse.data.results);
-
             })
             .catch((error) => {
                 console.log(error);
-
             })
-
     }
 
+    const flipCard = (id) => {
+        setFlipedCards(prevState => ({
+            ...prevState,
+            [id]: !prevState[id]
+            
+        }))
+    }
 
+    function formatDate(dateString) {
+        const date = new Date(dateString)
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        return `${day}/${month}/${year}`  
+    }
+    let hoy = new Date()
+    
     return (
-        <>
-            <div className="Desing">
-                {/* {characters.map((person) => (
-                    <ul key={person.id}>
-                        <img src={person.image} alt={person.name} width={'200'} />
-                        <li> {person.gender}</li>
-                        <li>{person.name}</li>
-                        <li>{person.status}</li>
-                    </ul>
-                ))} */}
-                <button onClick={bringCharacters}>Traer personajes</button>
-            </div>
+        <div className='design'>
+            <button className='boton' onClick={() => (navigate('episode'))}>Episodes</button>
             {characters.map((person) => (
-
-                <Card style={{ width: '18rem' }}>
-                        <Card.Title><h2>{person.name}</h2></Card.Title>
-                    <Card.Img variant="top" src={person.image} />
-                    <Card.Body>
-                        <Card.Text><h4>Specie: {person.species} - Status: {person.status}</h4></Card.Text>
-                        <Card.Text><h4>Sex: {person.gender}</h4></Card.Text>
-                        <Card.Text><h5>Origin: {person.origin.name}</h5></Card.Text>
-                        <Button variant="primary">Go somewhere</Button>
-                    </Card.Body>
+                <Card key={person.id} style={{ width: '18rem' }}>
+                    {flippedCards[person.id] ? (
+                        // Mostrar el reverso de la carta
+                        <div>
+                            <Card.Title><h2>Detalles</h2></Card.Title>
+                            <Card.Body>
+                                <Card.Text>Specie: {person.species}</Card.Text>
+                                <Card.Text>Status: {person.status}</Card.Text>
+                                <Card.Text>Sex: {person.gender}</Card.Text>
+                                <Card.Text>Origin: {person.origin.name}</Card.Text>
+                                <Card.Text>City: {person.location.name}</Card.Text>
+                                <Card.Text>City: {person.episode}</Card.Text>
+                                <Card.Text>Created: {formatDate(person.created)}</Card.Text>
+                                <Button variant="primary" onClick={() => flipCard(person.id)}>
+                                    Go Back
+                                </Button>
+                            </Card.Body>
+                        </div>
+                    ) : (
+                        // Mostrar el anverso de la carta
+                        <div>
+                            <Card.Title><h2>{person.name}</h2></Card.Title>
+                            <Card.Img variant="top" src={person.image} />
+                            <Card.Body>
+                                <Button variant="primary" onClick={() => flipCard(person.id)}>
+                                    More details
+                                </Button>
+                            </Card.Body>
+                        </div>
+                    )}
                 </Card>
             ))}
-        </>
+
+                        <button onClick={bringCharacters}>Traer personajes</button>
+        </div>
     );
 };

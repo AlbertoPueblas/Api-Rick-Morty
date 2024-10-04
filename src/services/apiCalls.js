@@ -10,3 +10,9 @@ export const bringAllCharacters = async () => {
 
     return response;
 }
+
+export const AllEpisodes = async () => {
+    const res = await axios.get(`${API_URL}episode`)
+
+    return res;
+} 

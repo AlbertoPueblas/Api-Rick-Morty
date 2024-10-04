@@ -21,3 +21,5 @@ Tambien instalaremos axios con npm i axios, para poder interactuar con cualquien
 ## Ejemplo.
 ![alt text](image-3.png)</br>
 ![alt text](image-4.png)</br>
+
+Una vez conseguimos setear los personajes podremos asignarles atributos como el nombre por ejemplo y mostrarlos en una lista ordenada.
