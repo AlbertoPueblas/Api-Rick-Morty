@@ -1,15 +1,9 @@
-.Desing {
-    display: flex;
-    font-size: xx-large;
-}
-
 .card {
-    background-color: rgb(87, 87, 88);
+    box-shadow: 3em,3em, black;
     margin-top: 1em;
     border-radius: 1em;
-    min-height: 27em;
-
+    min-height: 28em;
     Img {
-        border-radius: 5em;
+        border-radius: 4em;
     }
 }
