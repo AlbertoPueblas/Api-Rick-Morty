@@ -11,8 +11,13 @@ export const bringAllCharacters = async () => {
     return response;
 }
 
-export const AllEpisodes = async () => {
-    const res = await axios.get(`${API_URL}episode`)
+export const AllLocations = async () => {
+    const res = await axios.get(`${API_URL}location`)
 
     return res;
 } 
+
+export const AllEpisodes = async () => {
+    const res = await axios.get(`${API_URL}episode`)
+    return res;
+}

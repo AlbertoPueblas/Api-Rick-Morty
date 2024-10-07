@@ -1,0 +1,9 @@
+.carta {
+    margin: 0.5em;
+    border-radius: 1em;
+    padding: 1em;
+    height: 14em;
+    width: 16em;
+    background-color: rgb(52, 115, 145);
+    box-shadow: 0.5em 0.5em 2em rgb(47, 228, 11);
+}

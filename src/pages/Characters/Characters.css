@@ -1,9 +1,39 @@
 .card {
-    box-shadow: 3em,3em, black;
-    margin-top: 1em;
+    margin: 0.4em;
     border-radius: 1em;
-    min-height: 28em;
-    Img {
-        border-radius: 4em;
-    }
+    min-height: 30em;
+}
+.card img {
+    border-radius: 4em;
+    padding: 1em;
+}
+
+.button{
+    margin-bottom: 1em;
+}
+.desing{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.row{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.container{
+
+    display: flex;
+    justify-content: center;
+}
+
+.card-container{
+    margin: 1em;
+
 }
