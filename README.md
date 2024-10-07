@@ -23,3 +23,11 @@ Tambien instalaremos axios con npm i axios, para poder interactuar con cualquien
 ![alt text](image-4.png)</br>
 
 Una vez conseguimos setear los personajes podremos asignarles atributos como el nombre por ejemplo y mostrarlos en una lista ordenada.
+
+## Estilo con Css
+
+Le daremos estilo con css y haremos las vistas responsive antes de seguir profundizando en mas endpoints.
+
+## Tecnologías utilizadas:
+
+![js](https://img.shields.io/badge/JavaScript-yellow?logo=JavaScript) ![](https://img.shields.io/badge/React-ligthblue?logo=React) ![](https://img.shields.io/badge/Redux-purple?logo=Redux) ![css](https://img.shields.io/badge/CSS3-blue?logo=CSS3) ![html](https://img.shields.io/badge/html5-orange?logo=html5)
