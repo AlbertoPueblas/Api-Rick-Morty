@@ -38,3 +38,15 @@
     margin: 1em;
 
 }
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    margin-top: 1em;
+}
+.btnCard{
+    justify-content: center;
+    text-align: center;
+}

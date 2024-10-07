@@ -20,6 +20,9 @@ export const Characters = () => {
     const [episodes, setEpisodes] = useState({});
     const [showModal, setShowModal] = useState(false);
     const [selectedCharacter, setSelectedCharacter] = useState(null);
+    // Paginacion.
+    const [currentPage, setCurrentPage] = useState(1);
+    const episodesPerPage = 10;
 
     const navigate = useNavigate();
 
@@ -88,41 +91,61 @@ useEffect(() => {
         setSelectedCharacter(null); // Limpiamos el personaje seleccionado
     };
 
+    const paginateEpisodes = (episodesList) => {
+        const indexOfLastEpisode = currentPage * episodesPerPage;
+        const indexOfFirstEpisode = indexOfLastEpisode - episodesPerPage;
+        const currentEpisodes = episodesList.slice(indexOfFirstEpisode, indexOfLastEpisode);
+    
+        // Si la cantidad de episodios actuales es menor que el número máximo por página (5), añade espacios en blanco
+        const remainingSpots = episodesPerPage - currentEpisodes.length;
+    
+        // Crear un array con elementos vacíos para completar la página
+        const emptySlots = Array(remainingSpots).fill('');
+    
+        // Devuelve los episodios actuales y los elementos vacíos para que siempre sean 5
+        return [...currentEpisodes, ...emptySlots];
+    };
+
+    // Funciones para cambiar de página
+    const handleNextPage = () => {
+        if (selectedCharacter && episodes[selectedCharacter] && currentPage < Math.ceil(episodes[selectedCharacter].length / episodesPerPage)) {
+            setCurrentPage(prevPage => prevPage + 1);
+        }
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(prevPage => prevPage - 1);
+        }
+    };
+
     return (
         <div className='desing'>
             <Container>
                 <Row xs={12} sm={6} md={3}>
-
-
                     {characters.map((person) => (
                         <Card key={person.id} style={{ width: '18rem' }} className='card'>
                             {flippedCards[person.id] ? (
-                                // Mostrar el reverso de la carta
                                 <div>
-                                    <Card.Title><h4>Detalles</h4></Card.Title>
+                                    <Card.Title>Detalles</Card.Title>
                                     <Card.Body>
                                         <Card.Text>Specie: {person.species}</Card.Text>
                                         <Card.Text>Status: {person.status}</Card.Text>
                                         <Card.Text>Sex: {person.gender}</Card.Text>
                                         <Card.Text>Origin: {person.origin.name}</Card.Text>
                                         <Card.Text>City: {person.location.name}</Card.Text>
+                                        <Card.Text className='btnCard'>
                                         <Button variant='primary' onClick={() => handleShow(person.id)}>
                                             Show Episodes
                                         </Button>
-                                        {episodes[person.id] ? (
-                                            <ul>
-                                            </ul>
-                                        ) : (
-                                            toast.warning('Chargin Episodes')
-                                        )}
+                                        </Card.Text>
                                         <Button variant="primary" onClick={() => flipCard(person.id)}>
                                             Go Back
                                         </Button>
                                     </Card.Body>
                                 </div>
                             ) : (
-                                // Mostrar el anverso de la carta
-                                <div >
+                                <div>
                                     <Card.Title><h5>{person.name}</h5></Card.Title>
                                     <Card.Img variant="top" src={person.image} />
                                     <Card.Body>
@@ -136,21 +159,39 @@ useEffect(() => {
                     ))}
                 </Row>
             </Container>
+
             <Modal show={showModal} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Episodes to {selectedCharacter !== null ? characters.find((char) => char.id === selectedCharacter).name : ''}</Modal.Title>
+                    <Modal.Title>Episodes for {selectedCharacter !== null ? characters.find((char) => char.id === selectedCharacter).name : ''}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {selectedCharacter !== null && episodes[selectedCharacter] ? (
-                        <ol>
-                            {episodes[selectedCharacter].map((episodeName, index) => (
-                                <li key={index}>{episodeName}</li>
-                            ))}
-                        </ol>
+                        <>
+                            <ul>
+                                {paginateEpisodes(episodes[selectedCharacter]).map((episodeName, index) => (
+                                    <li key={index}>{episodeName}</li>
+                                ))}
+                            </ul>
+                            <div className="pagination-controls">
+                                <Button
+                                    variant="secondary"
+                                    onClick={handlePrevPage}
+                                    disabled={currentPage === 1}
+                                >
+                                    Previous
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    onClick={handleNextPage}
+                                    disabled={currentPage >= Math.ceil(episodes[selectedCharacter].length / episodesPerPage)}
+                                >
+                                    Next
+                                </Button>
+                            </div>
+                        </>
                     ) : (
-                        toast.success('Charging Episodes') 
+                        toast.success('Charging Episodes')
                     )}
-
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
