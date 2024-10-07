@@ -1,7 +1,6 @@
 import React from 'react';
 // import { useEffect, useState } from 'react'
 import './Home.css'
-import { useNavigate } from 'react-router-dom'
 // import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Button, Container, Image, Row } from 'react-bootstrap';
@@ -11,7 +10,6 @@ import fondo from '../../images/fondo.jpg'
 
 export const Home = () => {
 
-    const navigate = useNavigate();
 
 
 
