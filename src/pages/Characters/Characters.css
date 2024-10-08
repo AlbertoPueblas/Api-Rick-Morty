@@ -1,11 +1,11 @@
 .card {
-    margin: 0.4em;
     border-radius: 1em;
-    min-height: 30em;
+    max-height: 3em;
 }
 .card img {
     border-radius: 4em;
-    padding: 1em;
+    padding: 0.2em;
+    max-width: 12em;
 }
 
 .button{
@@ -44,9 +44,10 @@
     justify-content: center;
     align-items: center;
     gap: 1em;
-    margin-top: 1em;
 }
 .btnCard{
+    margin: 0.2em;
     justify-content: center;
     text-align: center;
+    margin-top: -1.5em;
 }

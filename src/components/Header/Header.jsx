@@ -17,7 +17,7 @@ function Header() {
                         src={cabecera} className='cabecera'
                         onClick={() => (navigate('/'))}>
                     </img>
-                    <p>Click on image go back</p>
+                    <p>Click on image to go back</p>
                     <div className="botonesNav">
                         <Button variant='outline-info' onClick={() => (navigate('characters'))}>Characters</Button>
                         <Button variant='outline-success'onClick={() => (navigate('episodes'))}>Episodes</Button>

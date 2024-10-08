@@ -12,18 +12,30 @@ export const Locations = () => {
     const [residents, setResidents] = useState({}); // Para almacenar los residentes por localización
     const [selectedLocationId, setSelectedLocationId] = useState(null); // Localización seleccionada
     const [showModal, setShowModal] = useState(false); // Control del modal
+    //Paginación
+    const [currentPage, setCurrentPage] = useState(1);
+    const locationsPerPAge = 20;
+    const [totalLocations, setTotalLocations] = useState(0);
 
-    const [currentPage, setCurrentPage] = useState(1); // Página actual
-const residentsPerPage = 10;
-
-
-    const bringLocation = () => {
-        AllLocations()
-            .then((res) => {
-                setLocations(res.data.results)
-            })
+    const bringLocation = async (page) => {
+        try {
+            const response = await AllLocations(page);
+            setLocations(response.data.results);
+            setTotalLocations(response.data.info.count);
+            console.log(response.data.results);
+            
+        } catch (error) {
+            console.log(error);
+        }
     }
+    useEffect(() => {
+        bringLocation(currentPage);
+    }, [currentPage]);
 
+    const indexOfLastEpisode = currentPage * locationsPerPAge;
+    const indexOfFirstEpisode = indexOfLastEpisode - locationsPerPAge;
+    const currentLocations = locations.slice(indexOfFirstEpisode, indexOfLastEpisode);
+    
     const fetchResidents = async (id) => {
         const location = locations.find((resident) => resident.id === id);
         const residentUrls = location.residents;
@@ -43,9 +55,6 @@ const residentsPerPage = 10;
 
         }
     }
-    useEffect(() => {
-        bringLocation();
-    },[])
 
     // Función para abrir el modal
     const handleShow = (id) => {
@@ -63,101 +72,85 @@ const residentsPerPage = 10;
         setSelectedLocationId(null); // Limpiamos el personaje seleccionado
     };
 
-    const paginateResidents = (residentsList) => {
-        const indexOfLastResident = currentPage * residentsPerPage;
-        const indexOfFirstResident = indexOfLastResident - residentsPerPage;
-        const currentResidents = residentsList.slice(indexOfFirstResident, indexOfLastResident);
-    
-        // Si la cantidad de residentes actuales es menor que el número máximo por página, añade espacios en blanco
-        const remainingSpots = residentsPerPage - currentResidents.length;
-    
-        // Crear un array con elementos vacíos para completar la página
-        const emptySlots = Array(remainingSpots).fill('');
-    
-        // Devuelve los residentes actuales y los elementos vacíos para que siempre sean 5
-        return [...currentResidents, ...emptySlots];
-    };
     const handleNextPage = () => {
-        if (selectedLocationId && residents[selectedLocationId] && currentPage < Math.ceil(residents[selectedLocationId].length / residentsPerPage)) {
+        if (currentPage < Math.ceil(totalLocations / locationsPerPAge)) {
             setCurrentPage((prevPage) => prevPage + 1);
         }
-    };
-    
+    }
+
     const handlePrevPage = () => {
         if (currentPage > 1) {
             setCurrentPage((prevPage) => prevPage - 1);
         }
-    };
-    
-    
+    }
+
     return (
         <>
-        <Container>
-            <Row xs={12} sm={6} md={3}>
-            {locations.map((location) => (
-                <div key={location.id} style={{ width: '18rem' }} className='card'>
-                    <Card.Body>
+            <Container>
+                <Row xs={12} sm={6} md={3}>
+                    {locations.map((location) => (
+                        <div key={location.id} style={{ width: '13rem', height: '10rem' }} className='card'>
+                            <Card.Body >
+                                <Card.Title> <h5>{location.name}</h5> </Card.Title>
+                                <p>Type</p>
+                               
+                                <Card.Text>Type: {location.type} </Card.Text>
+                                <p>Dimension</p>
+                                <Card.Text>{location.dimension} </Card.Text>
+                            </Card.Body>
 
-                        <Card.Title> <h3>Location Details</h3> </Card.Title>
-                        <br/>
-                        <Card.Text> Name:  {location.name} </Card.Text>
-                        <br/>
-                        <Card.Text>  Type: {location.type} </Card.Text>
-                        <br/>
-                        <Card.Text> Dimension: {location.dimension} </Card.Text>
-                    </Card.Body>
+                            <Button variant='outline-info' onClick={() => handleShow(location.id)} >
+                                Show Residents
+                            </Button>
 
-                    <Button variant='outline-info' onClick={() => handleShow(location.id)} >
-                        Show Residents
+
+                            <Modal show={showModal && selectedLocationId === location.id} onHide={handleClose} >
+                                <Modal.Header closeButton>
+                                    <Modal.Title> Residents of {location.name} </Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    {/* Si los residentes ya fueron cargados, los mostramos paginados */}
+                                    {residents[location.id] ? (
+                                        residents[location.id].length > 0 ? (
+                                            <>
+                                                <ol>
+                                                    {residents[location.id].map((resident, index) => (
+                                                        <li key={index}>{resident}</li>
+                                                    ))}
+                                                </ol>
+                                            </>
+                                        ) : (
+                                            <h6>No residents found.</h6>
+                                        )
+                                    ) : (
+                                        <p>Loading resident...</p>
+                                    )}
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant='secondary' onClick={handleClose}>Close</Button>
+                                </Modal.Footer>
+                            </Modal>
+
+                        </div>
+                    ))}
+                </Row>
+                <div className="pagination-controls">
+                    <Button
+                        variant="primary"
+                        onClick={handlePrevPage}
+                        disabled={currentPage === 1}
+                    >
+                        Prev
                     </Button>
-
-
-                    <Modal show={showModal && selectedLocationId === location.id} onHide={handleClose} >
-    <Modal.Header closeButton>
-        <Modal.Title> Residents of {location.name} </Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-        {/* Si los residentes ya fueron cargados, los mostramos paginados */}
-        {residents[location.id] ? (
-            residents[location.id].length > 0 ? (
-                <>
-                    <ul>
-                        {paginateResidents(residents[location.id]).map((resident, index) => (
-                            <li key={index}>{resident || <span>&nbsp;</span>}</li> // Si el residente es vacío, deja espacio en blanco
-                        ))}
-                    </ul>
-                    <div className="pagination-controls">
-                        <Button
-                            variant="secondary"
-                            onClick={handlePrevPage}
-                            disabled={currentPage === 1}
-                        >
-                            Previous
-                        </Button>
-                        <Button
-                            variant="secondary"
-                            onClick={handleNextPage}
-                            disabled={currentPage >= Math.ceil(residents[location.id].length / residentsPerPage)}
-                        >
-                            Next
-                        </Button>
-                    </div>
-                </>
-            ) : (
-                <h6>No residents found.</h6>
-            )
-        ) : (
-            <p>Loading resident...</p>
-        )}
-    </Modal.Body>
-    <Modal.Footer>
-        <Button variant='secondary' onClick={handleClose}>Close</Button>
-    </Modal.Footer>
-</Modal>
-
+                    <span>Page {currentPage} of {Math.ceil(totalLocations / locationsPerPAge)}</span>
+                    <Button
+                        variant="primary"
+                        onClick={handleNextPage}
+                        disabled={currentPage >= Math.ceil(totalLocations / locationsPerPAge)}
+                    >
+                        Next
+                    </Button>
                 </div>
-            ))}
-            </Row>
             </Container>
         </>
     )

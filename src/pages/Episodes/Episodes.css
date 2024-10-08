@@ -3,6 +3,13 @@
     margin: 0.5em;
     border-radius: 1em;
     padding: 1em;
-    height: 14em;
+    height: 13em;
     width: 16em;
+    box-shadow: 0em 0em 0em blue;
+    transition: box-shadow 0.3s ease;
+}
+.carta:hover{
+    box-shadow: 0em 0em 0.5em rgb(8, 216, 53);
+    transition: box-shadow 0.3s ease;
+    transform: scale(1.1);
 }
